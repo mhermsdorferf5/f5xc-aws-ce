@@ -18,6 +18,18 @@ variable "f5xc_ce_gateway_multi_node" {
   type        = bool
   default     = false
 }
+variable "f5xc_ce_gateway_multi_nic" {
+  description = "OPTIONAL: Set to true to deploy a multi nic cluster of Customer Edges"
+  type        = bool
+  default     = false
+}
+
+variable "f5xc_ce_assign_eip" {
+  description = "OPTIONAL: Set to true to assign an EIP on the outside interface of Customer Edges"
+  type        = bool
+  default     = false
+}
+
 variable "az1" {
   description = "OPTIONAL: AWS availability zone to deploy first Customer Edge into"
   type        = string
@@ -95,7 +107,7 @@ variable "inside_security_group" {
 }
 
 
-variable "amis" {
+variable "multinic_amis" {
   description = "REQUIRED: The AWS amis for the Customer Edge image"
   type        = map(any)
   default = {
@@ -119,6 +131,33 @@ variable "amis" {
     "us-east-2"      = "ami-01ba94b5a83adcb35"
     "us-west-1"      = "ami-092a2a07d2d3a445f"
     "us-west-2"      = "ami-07252e5ab4023b8cf"
+  }
+}
+
+variable "singlenic_amis" {
+  description = "REQUIRED: The AWS amis for the Customer Edge image"
+  type        = map(any)
+  default = {
+    "ca-central-1"      = "ami-0ddc009ae69986eb4"
+"af-south-1"      = "ami-0bcfb554a48878b52"
+"ap-east-1"      = "ami-03cf35954fb9084fc"
+"ap-south-1"      = "ami-099c0c7e19e1afd16"
+"ap-northeast-2"      = "ami-04f6d5781039d2f88"
+"ap-southeast-2"      = "ami-0ae68f561b7d20682"
+"ap-northeast-1"      = "ami-07dac882268159d52"
+"ap-southeast-1"      = "ami-0dba294abe676bd58"
+"eu-central-1"      = "ami-027625cb269f5d7e9"
+"eu-west-1"      = "ami-01baaca2a3b1b0114"
+"eu-west-3"      = "ami-0e1361351f9205511"
+"eu-south-1"      = "ami-00cb6474298a310af"
+"eu-north-1"      = "ami-0366c929eb2ac407b"
+"eu-west-2"      = "ami-05f5a414a42961df6"
+"me-south-1"      = "ami-0fb5db9d908d231c3"
+"sa-east-1"      = "ami-09082c4758ef6ec36"
+"us-east-1"      = "ami-0f94aee77d07b0094"
+"us-east-2"      = "ami-0660aaf7b6edaa980"
+"us-west-1"      = "ami-0cf44e35e2aecacb4"
+"us-west-2"      = "ami-0cba83d31d405a8f5"
   }
 }
 

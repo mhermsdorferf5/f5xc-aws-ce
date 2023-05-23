@@ -137,8 +137,13 @@ resource "aws_iam_instance_profile" "f5xc_profile" {
   name = "f5xc_profile_${random_id.buildSuffix.hex}"
   role = aws_iam_role.f5xc_role.name
 }
+
+
+
+
 # Create Network Interfaces for Customer Edges
 resource "aws_network_interface" "f5xc_ce1_inside" {
+  count                     = var.f5xc_ce_gateway_multi_nic ? 1 : 0
   subnet_id                 = var.ce1_inside_subnet_id
   private_ips_count         = 1
   security_groups           = [var.inside_security_group]
@@ -165,6 +170,7 @@ resource "aws_network_interface" "f5xc_ce1_outside" {
 }
 
 resource "aws_eip" "f5xc_ce1_outside" {
+  count                     = var.f5xc_ce_assign_eip ? 1 : 0
   vpc                       = true
   network_interface         = aws_network_interface.f5xc_ce1_outside.id
   associate_with_private_ip = aws_network_interface.f5xc_ce1_outside.private_ip
@@ -175,7 +181,7 @@ resource "aws_eip" "f5xc_ce1_outside" {
 }
 
 resource "aws_network_interface" "f5xc_ce2_inside" {
-  count                     = var.f5xc_ce_gateway_multi_node ? 1 : 0
+  count                     = var.f5xc_ce_gateway_multi_nic && var.f5xc_ce_gateway_multi_node ? 1 : 0
   subnet_id                 = var.ce2_inside_subnet_id != "" ? var.ce2_inside_subnet_id : var.ce1_inside_subnet_id
   private_ips_count         = 1
   security_groups           = [var.inside_security_group]
@@ -203,7 +209,7 @@ resource "aws_network_interface" "f5xc_ce2_outside" {
 }
 
 resource "aws_eip" "f5xc_ce2_outside" {
-  count                     = var.f5xc_ce_gateway_multi_node ? 1 : 0
+  count                     = var.f5xc_ce_assign_eip && var.f5xc_ce_gateway_multi_node ? 1 : 0
   vpc                       = true
   network_interface         = aws_network_interface.f5xc_ce2_outside[0].id
   associate_with_private_ip = aws_network_interface.f5xc_ce2_outside[0].private_ip
@@ -214,7 +220,7 @@ resource "aws_eip" "f5xc_ce2_outside" {
 }
 
 resource "aws_network_interface" "f5xc_ce3_inside" {
-  count                     = var.f5xc_ce_gateway_multi_node ? 1 : 0
+  count                     = var.f5xc_ce_gateway_multi_nic && var.f5xc_ce_gateway_multi_node ? 1 : 0
   subnet_id                 = var.ce3_inside_subnet_id != "" ? var.ce3_inside_subnet_id : var.ce1_inside_subnet_id
   private_ips_count         = 1
   security_groups           = [var.inside_security_group]
@@ -242,7 +248,7 @@ resource "aws_network_interface" "f5xc_ce3_outside" {
 }
 
 resource "aws_eip" "f5xc_ce3_outside" {
-  count                     = var.f5xc_ce_gateway_multi_node ? 1 : 0
+  count                     = var.f5xc_ce_assign_eip && var.f5xc_ce_gateway_multi_node ? 1 : 0
   vpc                       = true
   network_interface         = aws_network_interface.f5xc_ce3_outside[0].id
   associate_with_private_ip = aws_network_interface.f5xc_ce3_outside[0].private_ip
@@ -253,7 +259,7 @@ resource "aws_eip" "f5xc_ce3_outside" {
 }
 
 resource "aws_instance" "f5xc_ce1" {
-  ami           = var.amis[var.aws_region]
+  ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
   root_block_device {
@@ -279,10 +285,10 @@ resource "aws_instance" "f5xc_ce1" {
     network_interface_id = aws_network_interface.f5xc_ce1_outside.id
     device_index         = 0
   }
-  network_interface {
-    network_interface_id = aws_network_interface.f5xc_ce1_inside.id
-    device_index         = 1
-  }
+#  network_interface {
+#    network_interface_id = aws_network_interface.f5xc_ce1_inside.id
+#    device_index         = 1
+#  }
   tags = {
     Name = "${var.project_prefix}-master-0"
     "kubernetes.io/cluster/${var.clustername}" = "owned"
@@ -292,7 +298,7 @@ resource "aws_instance" "f5xc_ce1" {
 
 resource "aws_instance" "f5xc_ce2" {
   count         = var.f5xc_ce_gateway_multi_node ? 1 : 0
-  ami           = var.amis[var.aws_region]
+  ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
 
@@ -332,7 +338,7 @@ resource "aws_instance" "f5xc_ce2" {
 
 resource "aws_instance" "f5xc_ce3" {
   count         = var.f5xc_ce_gateway_multi_node ? 1 : 0
-  ami           = var.amis[var.aws_region]
+  ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
 

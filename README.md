@@ -32,6 +32,8 @@ Customer AWS deployments vary greatly from one customer to the next.  Utilizing 
 | aws_access_key             | REQUIRED: AWS programatic access key                                     | string   |                                      |
 | aws_secret_key             | REQUIRED: AWS programatic secret key                                     | string   |                                      |
 | f5xc_ce_gateway_multi_node | OPTIONAL: Set to true to deploy a 3 node cluster of Customer Edges. False deploys a single node.       | bool     | false                                |
+| f5xc_ce_gateway_multi_nic | OPTIONAL: Set to true to deploy Customer Edges with multiple network interfaces. False deploys a single nic node.       | bool     | false                                |
+| f5xc_ce_assign_eip | OPTIONAL: Set to true to deploy a EIP on the outside interface, false to deploy with no EIP.       | bool     | false                                |
 | az1                        | OPTIONAL: AWS availability zone to deploy first Customer Edge into       | string   | ""                                   |
 | az2                        | OPTIONAL: AWS availability zone to deploy second Customer Edge into      | string   | ""                                   |
 | az3                        | OPTIONAL: AWS availability zone to deploy third Customer Edge into       | string   | ""                                   |

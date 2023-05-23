@@ -261,7 +261,7 @@ resource "aws_eip" "f5xc_ce3_outside" {
 resource "aws_instance" "f5xc_ce1" {
   ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
+  #iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
   root_block_device {
     volume_size = var.instance_disk_size
     volume_type = "gp3"
@@ -269,7 +269,7 @@ resource "aws_instance" "f5xc_ce1" {
   get_password_data = false
   monitoring        = false
   availability_zone = var.az1
-  key_name = "aws_key_pair.deployer.key_name"
+  key_name = "${aws_key_pair.deployer.key_name}"
 
   user_data_replace_on_change = true
   user_data = templatefile("${path.module}/cloud_init.yaml.template",
@@ -278,7 +278,7 @@ resource "aws_instance" "f5xc_ce1" {
       clustername   = "${var.clustername}",
       sitelatitude  = "${var.sitelatitude}",
       sitelongitude = "${var.sitelongitude}",
-      sitesshrsakey = "${tls_private_key.newkey.private_key_pem}"
+      sitesshrsakey = "${tls_private_key.newkey.public_key_openssh}"
     }
   )
 
@@ -301,7 +301,7 @@ resource "aws_instance" "f5xc_ce2" {
   count         = var.f5xc_ce_gateway_multi_node ? 1 : 0
   ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
+  #iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
 
   root_block_device {
     volume_size = var.instance_disk_size
@@ -310,7 +310,7 @@ resource "aws_instance" "f5xc_ce2" {
   get_password_data = false
   monitoring        = false
   availability_zone = var.az2
-  key_name = "${tls_private_key.newkey.private_key_pem}"
+  key_name = "${aws_key_pair.deployer.key_name}"
 
   user_data_replace_on_change = true
   user_data = templatefile("${path.module}/cloud_init.yaml.template",
@@ -319,7 +319,7 @@ resource "aws_instance" "f5xc_ce2" {
       clustername   = "${var.clustername}",
       sitelatitude  = "${var.sitelatitude}",
       sitelongitude = "${var.sitelongitude}",
-      sitesshrsakey = "${tls_private_key.newkey.private_key_pem}"
+      sitesshrsakey = "${tls_private_key.newkey.public_key_openssh}"
     }
   )
 
@@ -342,7 +342,7 @@ resource "aws_instance" "f5xc_ce3" {
   count         = var.f5xc_ce_gateway_multi_node ? 1 : 0
   ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
   instance_type = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
+  #iam_instance_profile = aws_iam_instance_profile.f5xc_profile.name
 
   root_block_device {
     volume_size = var.instance_disk_size
@@ -351,7 +351,7 @@ resource "aws_instance" "f5xc_ce3" {
   get_password_data = false
   monitoring        = false
   availability_zone = var.az3
-  key_name = "${tls_private_key.newkey.private_key_pem}"
+  key_name = "${aws_key_pair.deployer.key_name}"
 
   user_data_replace_on_change = true
   user_data = templatefile("${path.module}/cloud_init.yaml.template",
@@ -360,7 +360,7 @@ resource "aws_instance" "f5xc_ce3" {
       clustername   = "${var.clustername}",
       sitelatitude  = "${var.sitelatitude}",
       sitelongitude = "${var.sitelongitude}",
-      sitesshrsakey = "${tls_private_key.newkey.private_key_pem}"
+      sitesshrsakey = "${tls_private_key.newkey.public_key_openssh}"
     }
   )
 

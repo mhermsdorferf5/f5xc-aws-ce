@@ -13,6 +13,16 @@ variable "aws_secret_key" {
   type        = string
 }
 
+variable "create_iam_role" {
+  description = "OPTIONAL: Set to true to create the IAM policy & role for the instance."
+  type        = bool
+  default     = true
+}
+variable "f5xc_ce_iam_role_name" {
+  description = "OPTIONAL: Name of IAM ROLE to create or name to reference to existing role if one already exists."
+  type        = string
+  default     = "f5xc_ce_iam_role"
+}
 variable "f5xc_ce_gateway_multi_node" {
   description = "OPTIONAL: Set to true to deploy a 3 node cluster of Customer Edges"
   type        = bool
@@ -108,7 +118,7 @@ variable "inside_security_group" {
 
 
 variable "multinic_amis" {
-  description = "REQUIRED: The AWS amis for the Customer Edge image"
+  description = "OPTIONAL: The AWS amis for the Customer Edge Multi-NIC image"
   type        = map(any)
   default = {
     "ca-central-1"   = "ami-052252c245ff77338"
@@ -135,34 +145,91 @@ variable "multinic_amis" {
 }
 
 variable "singlenic_amis" {
-  description = "REQUIRED: The AWS amis for the Customer Edge image"
+  description = "REQUIRED: The AWS amis for the Customer Edge Single-NIC image"
   type        = map(any)
   default = {
-    "ca-central-1"      = "ami-0ddc009ae69986eb4"
-"af-south-1"      = "ami-0bcfb554a48878b52"
-"ap-east-1"      = "ami-03cf35954fb9084fc"
-"ap-south-1"      = "ami-099c0c7e19e1afd16"
-"ap-northeast-2"      = "ami-04f6d5781039d2f88"
-"ap-southeast-2"      = "ami-0ae68f561b7d20682"
-"ap-northeast-1"      = "ami-07dac882268159d52"
-"ap-southeast-1"      = "ami-0dba294abe676bd58"
-"eu-central-1"      = "ami-027625cb269f5d7e9"
-"eu-west-1"      = "ami-01baaca2a3b1b0114"
-"eu-west-3"      = "ami-0e1361351f9205511"
-"eu-south-1"      = "ami-00cb6474298a310af"
-"eu-north-1"      = "ami-0366c929eb2ac407b"
-"eu-west-2"      = "ami-05f5a414a42961df6"
-"me-south-1"      = "ami-0fb5db9d908d231c3"
-"sa-east-1"      = "ami-09082c4758ef6ec36"
-"us-east-1"      = "ami-0f94aee77d07b0094"
-"us-east-2"      = "ami-0660aaf7b6edaa980"
-"us-west-1"      = "ami-0cf44e35e2aecacb4"
-"us-west-2"      = "ami-0cba83d31d405a8f5"
+    "ca-central-1"   = "ami-0ddc009ae69986eb4"
+    "af-south-1"     = "ami-0bcfb554a48878b52"
+    "ap-east-1"      = "ami-03cf35954fb9084fc"
+    "ap-south-1"     = "ami-099c0c7e19e1afd16"
+    "ap-northeast-2" = "ami-04f6d5781039d2f88"
+    "ap-southeast-2" = "ami-0ae68f561b7d20682"
+    "ap-northeast-1" = "ami-07dac882268159d52"
+    "ap-southeast-1" = "ami-0dba294abe676bd58"
+    "eu-central-1"   = "ami-027625cb269f5d7e9"
+    "eu-west-1"      = "ami-01baaca2a3b1b0114"
+    "eu-west-3"      = "ami-0e1361351f9205511"
+    "eu-south-1"     = "ami-00cb6474298a310af"
+    "eu-north-1"     = "ami-0366c929eb2ac407b"
+    "eu-west-2"      = "ami-05f5a414a42961df6"
+    "me-south-1"     = "ami-0fb5db9d908d231c3"
+    "sa-east-1"      = "ami-09082c4758ef6ec36"
+    "us-east-1"      = "ami-0f94aee77d07b0094"
+    "us-east-2"      = "ami-0660aaf7b6edaa980"
+    "us-west-1"      = "ami-0cf44e35e2aecacb4"
+    "us-west-2"      = "ami-0cba83d31d405a8f5"
   }
 }
 
+
+// Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
+variable "aws_region_latitude" {
+  description = "REQUIRED: The AWS Region Latitude and Longitude"
+  type        = map(any)
+  default = {
+    "ca-central-1"   = "45.5"
+    "af-south-1"     = "-33.93"
+    "ap-east-1"      = "22.27"
+    "ap-south-1"     = "19.08"
+    "ap-northeast-1" = "35.41"
+    "ap-northeast-2" = "37.56"
+    "ap-southeast-1" = "1.37"
+    "ap-southeast-2" = "-33.86"
+    "eu-central-1"   = "50"
+    "eu-west-1"      = "53"
+    "eu-west-2"      = "51"
+    "eu-west-3"      = "48.86"
+    "eu-south-1"     = "45.43"
+    "eu-north-1"     = "59.25"
+    "me-south-1"     = "26.10"
+    "sa-east-1"      = "-23.34"
+    "us-east-1"      = "38.13"
+    "us-east-2"      = "39.96"
+    "us-west-1"      = "37.35"
+    "us-west-2"      = "46.15"
+  }
+}
+// Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
+variable "aws_region_longitude" {
+  description = "REQUIRED: The AWS Region Latitude and Longitude"
+  type        = map(any)
+  default = {
+    "ca-central-1"   = "-73.6"
+    "af-south-1"     = "18.42"
+    "ap-east-1"      = "114.16"
+    "ap-south-1"     = "72.88"
+    "ap-northeast-1" = "193.42"
+    "ap-northeast-2" = "126.98"
+    "ap-southeast-1" = "103.8"
+    "ap-southeast-2" = "151.2"
+    "eu-central-1"   = "8"
+    "eu-west-1"      = "-8"
+    "eu-west-2"      = "-0.1"
+    "eu-west-3"      = "2.35"
+    "eu-south-1"     = "9.29"
+    "eu-north-1"     = "17.81"
+    "me-south-1"     = "50.46"
+    "sa-east-1"      = "-46.38"
+    "us-east-1"      = "-78.45"
+    "us-east-2"      = "-83"
+    "us-west-1"      = "-121.96"
+    "us-west-2"      = "-123.88"
+  }
+}
+
+
 variable "instance_type" {
-  description = "REQUIRED: The AWS instance type for the Customer Edge"
+  description = "OPTIONAL: The AWS instance type for the Customer Edge"
   type        = string
   default     = "t3.xlarge"
 }
@@ -170,14 +237,14 @@ variable "instance_type" {
 variable "instance_disk_size" {
   description = "OPTIONAL: The AWS disk size for the Customer Edge"
   type        = string
-  default     = "40"
+  default     = "80"
 }
 variable "sitelatitude" {
-  description = "REQUIRED: Site Physical Location Latitude. See https://www.latlong.net/"
+  description = "OPTIONAL: This will override the longitude lookup from the region, Site Physical Location Latitude. See https://www.latlong.net/"
   type        = string
 }
 variable "sitelongitude" {
-  description = "REQUIRED: Site Physical Location Longitude. See https://www.latlong.net/"
+  description = "OPTIONAL: This will override the longitude lookup from the region, Site Physical Location Longitude. See https://www.latlong.net/"
   type        = string
 }
 variable "clustername" {

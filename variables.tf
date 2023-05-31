@@ -80,112 +80,132 @@ variable "ce_settings" {
   type        = map(any)
 }
 
-variable "multinic_amis" {
+variable "aws_region_config" {
+  // Lattiude & Longitude Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
+  // AMIs pulled from: 
   description = "OPTIONAL: The AWS amis for the Customer Edge Multi-NIC image"
   type        = map(any)
   default = {
-    "ca-central-1"   = "ami-052252c245ff77338"
-    "af-south-1"     = "ami-0c22728f79f714ed1"
-    "ap-east-1"      = "ami-0a6cf3665c0612f91"
-    "ap-northeast-2" = "ami-01472d819351faf92"
-    "ap-southeast-2" = "ami-03ff18dfb7f90eb54"
-    "ap-south-1"     = "ami-0277ab0b4db359c93"
-    "ap-northeast-1" = "ami-0384d075a36447e2a"
-    "ap-southeast-1" = "ami-0d6463ee1e3727e84"
-    "eu-central-1"   = "ami-06d5e0073d97ecf99"
-    "eu-west-1"      = "ami-090680f491ad6d46a"
-    "eu-west-3"      = "ami-03bd7c41ca1b586a8"
-    "eu-south-1"     = "ami-0baafa10ffcd081b7"
-    "eu-north-1"     = "ami-006c465449ed98c69"
-    "eu-west-2"      = "ami-0df8a483722043a41"
-    "me-south-1"     = "ami-094efc1a78169dd7c"
-    "sa-east-1"      = "ami-07369c4b06cf22299"
-    "us-east-1"      = "ami-089311edbe1137720"
-    "us-east-2"      = "ami-01ba94b5a83adcb35"
-    "us-west-1"      = "ami-092a2a07d2d3a445f"
-    "us-west-2"      = "ami-07252e5ab4023b8cf"
-  }
-}
-
-variable "singlenic_amis" {
-  description = "REQUIRED: The AWS amis for the Customer Edge Single-NIC image"
-  type        = map(any)
-  default = {
-    "ca-central-1"   = "ami-0ddc009ae69986eb4"
-    "af-south-1"     = "ami-0bcfb554a48878b52"
-    "ap-east-1"      = "ami-03cf35954fb9084fc"
-    "ap-south-1"     = "ami-099c0c7e19e1afd16"
-    "ap-northeast-2" = "ami-04f6d5781039d2f88"
-    "ap-southeast-2" = "ami-0ae68f561b7d20682"
-    "ap-northeast-1" = "ami-07dac882268159d52"
-    "ap-southeast-1" = "ami-0dba294abe676bd58"
-    "eu-central-1"   = "ami-027625cb269f5d7e9"
-    "eu-west-1"      = "ami-01baaca2a3b1b0114"
-    "eu-west-3"      = "ami-0e1361351f9205511"
-    "eu-south-1"     = "ami-00cb6474298a310af"
-    "eu-north-1"     = "ami-0366c929eb2ac407b"
-    "eu-west-2"      = "ami-05f5a414a42961df6"
-    "me-south-1"     = "ami-0fb5db9d908d231c3"
-    "sa-east-1"      = "ami-09082c4758ef6ec36"
-    "us-east-1"      = "ami-0f94aee77d07b0094"
-    "us-east-2"      = "ami-0660aaf7b6edaa980"
-    "us-west-1"      = "ami-0cf44e35e2aecacb4"
-    "us-west-2"      = "ami-0cba83d31d405a8f5"
-  }
-}
-
-
-// Lat/Long Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
-variable "aws_region_latitude" {
-  description = "REQUIRED: The AWS Region Latitude and Longitude"
-  type        = map(any)
-  default = {
-    "ca-central-1"   = "45.5"
-    "af-south-1"     = "-33.93"
-    "ap-east-1"      = "22.27"
-    "ap-south-1"     = "19.08"
-    "ap-northeast-1" = "35.41"
-    "ap-northeast-2" = "37.56"
-    "ap-southeast-1" = "1.37"
-    "ap-southeast-2" = "-33.86"
-    "eu-central-1"   = "50"
-    "eu-west-1"      = "53"
-    "eu-west-2"      = "51"
-    "eu-west-3"      = "48.86"
-    "eu-south-1"     = "45.43"
-    "eu-north-1"     = "59.25"
-    "me-south-1"     = "26.10"
-    "sa-east-1"      = "-23.34"
-    "us-east-1"      = "38.13"
-    "us-east-2"      = "39.96"
-    "us-west-1"      = "37.35"
-    "us-west-2"      = "46.15"
-  }
-}
-variable "aws_region_longitude" {
-  description = "REQUIRED: The AWS Region Latitude and Longitude"
-  type        = map(any)
-  default = {
-    "ca-central-1"   = "-73.6"
-    "af-south-1"     = "18.42"
-    "ap-east-1"      = "114.16"
-    "ap-south-1"     = "72.88"
-    "ap-northeast-1" = "193.42"
-    "ap-northeast-2" = "126.98"
-    "ap-southeast-1" = "103.8"
-    "ap-southeast-2" = "151.2"
-    "eu-central-1"   = "8"
-    "eu-west-1"      = "-8"
-    "eu-west-2"      = "-0.1"
-    "eu-west-3"      = "2.35"
-    "eu-south-1"     = "9.29"
-    "eu-north-1"     = "17.81"
-    "me-south-1"     = "50.46"
-    "sa-east-1"      = "-46.38"
-    "us-east-1"      = "-78.45"
-    "us-east-2"      = "-83"
-    "us-west-1"      = "-121.96"
-    "us-west-2"      = "-123.88"
+    "us-east-1"       = {
+      "multinic_ami"  = "ami-089311edbe1137720"
+      "singlenic_ami" = "ami-0f94aee77d07b0094"
+      "lattiude"      = "38.13"
+      "longitude"     = "-78.45"
+    }
+    "us-east-2"       = {
+      "multinic_ami"  = "ami-01ba94b5a83adcb35"
+      "singlenic_ami" = "ami-0660aaf7b6edaa980"
+      "lattiude"      = "39.96"
+      "longitude"     = "-83"
+    }
+    "us-west-1"       = {
+      "multinic_ami"  = "ami-092a2a07d2d3a445f"
+      "singlenic_ami" = "ami-0cf44e35e2aecacb4"
+      "lattiude"      = "37.35"
+      "longitude"     = "-121.96"
+    }
+    "us-west-2"       = {
+      "multinic_ami"  = "ami-07252e5ab4023b8cf"
+      "singlenic_ami" = "ami-0cba83d31d405a8f5"
+      "lattiude"      = "46.15"
+      "longitude"     = "-123.88"
+    }
+    "ca-central-1"    = {
+      "multinic_ami"  = "ami-052252c245ff77338"
+      "singlenic_ami" = "ami-0ddc009ae69986eb4"
+      "lattiude"      = "45.5"
+      "longitude"     = "-73.6"
+    }
+    "ap-east-1"       = {
+      "multinic_ami"  = "ami-0a6cf3665c0612f91"
+      "singlenic_ami" = "ami-03cf35954fb9084fc"
+      "lattiude"      = "22.27"
+      "longitude"     = "114.16"
+    }
+    "ap-northeast-2"       = {
+      "multinic_ami"  = "ami-01472d819351faf92"
+      "singlenic_ami" = "ami-04f6d5781039d2f88"
+      "lattiude"      = "37.56"
+      "longitude"     = "126.98"
+    }
+    "ap-southeast-2"       = {
+      "multinic_ami"  = "ami-03ff18dfb7f90eb54"
+      "singlenic_ami" = "ami-0ae68f561b7d20682"
+      "lattiude"      = "-33.86"
+      "longitude"     = "151.2"
+    }
+    "ap-south-1"       = {
+      "multinic_ami"  = "ami-0277ab0b4db359c93"
+      "singlenic_ami" = "ami-099c0c7e19e1afd16"
+      "lattiude"      = "19.08"
+      "longitude"     = "72.88"
+    }
+    "ap-northeast-1"       = {
+      "multinic_ami"  = "ami-0384d075a36447e2a"
+      "singlenic_ami" = "ami-07dac882268159d52"
+      "lattiude"      = "35.41"
+      "longitude"     = "193.42"
+    }
+    "ap-southeast-1"       = {
+      "multinic_ami"  = "ami-0d6463ee1e3727e84"
+      "singlenic_ami" = "ami-0dba294abe676bd58"
+      "lattiude"      = "1.37"
+      "longitude"     = "103.8"
+    }
+    "eu-central-1"       = {
+      "multinic_ami"  = "ami-06d5e0073d97ecf99"
+      "singlenic_ami" = "ami-027625cb269f5d7e9"
+      "lattiude"      = "50"
+      "longitude"     = "8"
+    }
+    "eu-west-1"       = {
+      "multinic_ami"  = "ami-090680f491ad6d46a"
+      "singlenic_ami" = "ami-01baaca2a3b1b0114"
+      "lattiude"      = "53"
+      "longitude"     = "-8"
+    }
+    "eu-west-2"       = {
+      "multinic_ami"  = "ami-0df8a483722043a41"
+      "singlenic_ami" = "ami-05f5a414a42961df6"
+      "lattiude"      = "51"
+      "longitude"     = "-0.1"
+    }
+    "eu-west-3"       = {
+      "multinic_ami"  = "ami-03bd7c41ca1b586a8"
+      "singlenic_ami" = "ami-0e1361351f9205511"
+      "lattiude"      = "48.86"
+      "longitude"     = "2.35"
+    }
+    "eu-south-1"       = {
+      "multinic_ami"  = "ami-0baafa10ffcd081b7"
+      "singlenic_ami" = "ami-00cb6474298a310af"
+      "lattiude"      = "45.43"
+      "longitude"     = "9.29"
+    }
+    "eu-north-1"       = {
+      "multinic_ami"  = "ami-006c465449ed98c69"
+      "singlenic_ami" = "ami-0366c929eb2ac407b"
+      "lattiude"      = "59.25"
+      "longitude"     = "17.81"
+    }
+    "me-south-1"       = {
+      "multinic_ami"  = "ami-094efc1a78169dd7c"
+      "singlenic_ami" = "ami-0fb5db9d908d231c3"
+      "lattiude"      = "26.10"
+      "longitude"     = "50.46"
+    }
+    "sa-east-1"       = {
+      "multinic_ami"  = "ami-07369c4b06cf22299"
+      "singlenic_ami" = "ami-09082c4758ef6ec36"
+      "lattiude"      = "-23.34"
+      "longitude"     = "-46.38"
+    }
+    "af-south-1"       = {
+      "multinic_ami"  = "ami-0c22728f79f714ed1"
+      "singlenic_ami" = "ami-0bcfb554a48878b52"
+      "lattiude"      = "-33.93"
+      "longitude"     = "18.42"
+    }
   }
 }
 

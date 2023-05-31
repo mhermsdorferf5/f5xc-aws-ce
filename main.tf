@@ -191,7 +191,7 @@ resource "aws_eip" "outside_eip_map" {
 
 resource "aws_instance" "ce_map" {
   for_each = var.ce_settings
-  ami           = var.f5xc_ce_gateway_multi_nic ? var.multinic_amis[var.aws_region] : var.singlenic_amis[var.aws_region] 
+  ami           = var.f5xc_ce_gateway_multi_nic ? var.aws_region_config[var.aws_region]["multinic_ami"] : var.aws_region_config[var.aws_region]["singlenic_ami"]
   instance_type = var.instance_type
   iam_instance_profile = var.create_iam_role ? aws_iam_instance_profile.f5xc_profile[0].name : var.f5xc_ce_iam_role_name
   root_block_device {
@@ -208,8 +208,8 @@ resource "aws_instance" "ce_map" {
     {
       sitetoken     = "${var.sitetoken}",
       clustername   = "${var.clustername}",
-      sitelatitude  =  var.sitelatitude == "" ? var.aws_region_latitude[var.aws_region] : var.sitelatitude,
-      sitelongitude =  var.sitelongitude =="" ? var.aws_region_longitude[var.aws_region] : var.sitelongitude,
+      sitelatitude  =  var.sitelatitude == "" ? var.aws_region_config[var.aws_region]["lattiude"] : var.sitelatitude,
+      sitelongitude =  var.sitelongitude =="" ? var.aws_region_config[var.aws_region]["longitude"] : var.sitelongitude,
       sitesshrsakey = "${aws_key_pair.deployer.public_key}"
     }
   )

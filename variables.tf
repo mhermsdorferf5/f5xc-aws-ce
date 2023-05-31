@@ -23,11 +23,6 @@ variable "f5xc_ce_iam_role_name" {
   type        = string
   default     = "f5xc_ce_iam_role"
 }
-variable "f5xc_ce_gateway_multi_node" {
-  description = "OPTIONAL: Set to true to deploy a 3 node cluster of Customer Edges"
-  type        = bool
-  default     = false
-}
 variable "f5xc_ce_gateway_multi_nic" {
   description = "OPTIONAL: Set to true to deploy a multi nic cluster of Customer Edges"
   type        = bool
@@ -70,42 +65,6 @@ variable "resource_owner" {
   default     = "demo.user"
 }
 
-variable "ce1_outside_subnet_id" {
-  description = "REQUIRED: The AWS subnet ID for the outside subnet of Customer Edge 1"
-  type        = string
-}
-
-variable "ce1_inside_subnet_id" {
-  description = "REQUIRED: The AWS subnet ID for the inside subnet of Customer Edge 1"
-  type        = string
-}
-
-
-variable "ce2_outside_subnet_id" {
-  description = "OPTIONAL: The AWS subnet ID for the outside subnet of Customer Edge 2"
-  type        = string
-  default     = ""
-}
-
-variable "ce2_inside_subnet_id" {
-  description = "OPTIONAL: The AWS subnet ID for the inside subnet of Customer Edge 2"
-  type        = string
-  default     = ""
-}
-
-variable "ce3_outside_subnet_id" {
-  description = "OPTIONAL: The AWS subnet ID for the outside subnet of Customer Edge 3"
-  type        = string
-  default     = ""
-}
-
-variable "ce3_inside_subnet_id" {
-  description = "OPTIONAL: The AWS subnet ID for the inside subnet of Customer Edge 3"
-  type        = string
-  default     = ""
-
-}
-
 variable "outside_security_group" {
   description = "REQUIRED: The AWS security group ID for the outside interfaces"
   type        = string
@@ -116,6 +75,10 @@ variable "inside_security_group" {
   type        = string
 }
 
+variable "ce_settings" {
+  description = "REQUIRED: The az, subnet, etc for each Customer Edge instance."
+  type        = map(any)
+}
 
 variable "multinic_amis" {
   description = "OPTIONAL: The AWS amis for the Customer Edge Multi-NIC image"
@@ -172,7 +135,7 @@ variable "singlenic_amis" {
 }
 
 
-// Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
+// Lat/Long Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
 variable "aws_region_latitude" {
   description = "REQUIRED: The AWS Region Latitude and Longitude"
   type        = map(any)
@@ -199,7 +162,6 @@ variable "aws_region_latitude" {
     "us-west-2"      = "46.15"
   }
 }
-// Pulled from: https://github.com/turnkeylinux/aws-datacenters/blob/master/input/datacenters
 variable "aws_region_longitude" {
   description = "REQUIRED: The AWS Region Latitude and Longitude"
   type        = map(any)
@@ -227,7 +189,6 @@ variable "aws_region_longitude" {
   }
 }
 
-
 variable "instance_type" {
   description = "OPTIONAL: The AWS instance type for the Customer Edge"
   type        = string
@@ -242,10 +203,12 @@ variable "instance_disk_size" {
 variable "sitelatitude" {
   description = "OPTIONAL: This will override the longitude lookup from the region, Site Physical Location Latitude. See https://www.latlong.net/"
   type        = string
+  default     = ""
 }
 variable "sitelongitude" {
   description = "OPTIONAL: This will override the longitude lookup from the region, Site Physical Location Longitude. See https://www.latlong.net/"
   type        = string
+  default     = ""
 }
 variable "clustername" {
   description = "REQUIRED: Customer Edge site cluster name."

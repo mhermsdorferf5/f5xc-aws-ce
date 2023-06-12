@@ -88,7 +88,7 @@ inside_security_group      = ""
 clustername                = "exampleProject-tf-aws-useast2"
 sitetoken                  = "00000000-0000-0000-0000-000000000000"
 ce_settings   = {
-    "f5xc_ce_1" = { availability_zone = "us-east-1a", outside_subnet_arn = "subnet-00000000000000000", inside_subnet_arn = ""}
+    "f5xc_ce_1" = { availability_zone = "us-east-2a", outside_subnet_arn = "subnet-00000000000000000", inside_subnet_arn = ""}
 }
 default_tags = {
     "Owner" = "blah@example.com"

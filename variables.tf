@@ -59,12 +59,6 @@ variable "project_prefix" {
   default     = "demo"
 }
 
-variable "resource_owner" {
-  description = "OPTIONAL: Provide owner of the deployment for tagging purposes"
-  type        = string
-  default     = "demo.user"
-}
-
 variable "outside_security_group" {
   description = "REQUIRED: The AWS security group ID for the outside interfaces"
   type        = string
@@ -73,6 +67,11 @@ variable "outside_security_group" {
 variable "inside_security_group" {
   description = "REQUIRED: The AWS security group ID for the inside interfaces"
   type        = string
+}
+
+variable "default_tags" {
+  description = "OPTIONAL: Map of tag name & value to be added to each AWS object."
+  type        = map(any)
 }
 
 variable "ce_settings" {

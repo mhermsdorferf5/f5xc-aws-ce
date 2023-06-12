@@ -5,7 +5,6 @@ create_iam_role            = true
 f5xc_ce_gateway_multi_nic  = true
 f5xc_ce_assign_eip         = true
 project_prefix             = ""
-resource_owner             = ""
 outside_security_group     = ""
 inside_security_group      = ""
 clustername                = ""
@@ -14,4 +13,8 @@ ce_settings   = {
     "f5xc_ce_1" = { availability_zone = "", outside_subnet_arn = "", inside_subnet_arn = ""}
     "f5xc_ce_2" = { availability_zone = "", outside_subnet_arn = "", inside_subnet_arn = ""}
     "f5xc_ce_3" = { availability_zone = "", outside_subnet_arn = "", inside_subnet_arn = ""}
+}
+default_tags = {
+    Owner = ""
+    ves-io-creator-id = ""
 }

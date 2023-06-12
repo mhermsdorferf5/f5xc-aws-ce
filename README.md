@@ -32,20 +32,19 @@ Customer AWS deployments vary greatly from one customer to the next.  Utilizing 
 | aws_region                 | REQUIRED: AWS Region to deploy the Customer Edge into                                                                      | string   |                                      |
 | aws_access_key             | REQUIRED: AWS programatic access key                                                                                       | string   |                                      |
 | aws_secret_key             | REQUIRED: AWS programatic secret key                                                                                       | string   |                                      |
-| f5xc_ce_gateway_multi_node | OPTIONAL: Set to true to deploy a 3 node cluster of Customer Edges. False deploys a single node.                           | bool     | false                                |
-| f5xc_ce_gateway_multi_nic  | OPTIONAL: Set to true to deploy Customer Edges with multiple network interfaces. False deploys a single nic node.          | bool     | false                                |
-| f5xc_ce_assign_eip         | OPTIONAL: Set to true to deploy a EIP on the outside interface, false to deploy with no EIP.                               | bool     | false                                |
-| project_prefix             | OPTIONAL: Provide a project name prefix that will be applied                                                               | string   | demo                                 |
-| resource_owner             | OPTIONAL: Provide owner of the deployment for tagging purposes                                                             | string   | demo.user                            |
 | outside_security_group     | REQUIRED: The AWS security group ID for the outside interfaces                                                             | string   |                                      |
-| inside_security_group      | REQUIRED: The AWS security group ID for the inside interfaces                                                              | string   |                                      |
-| instance_type              | REQUIRED: The AWS instance type for the Customer Edge                                                                      | string   | t3.xlarge                            |
-| instance_disk_size         | OPTIONAL: The AWS disk size for the Customer Edge in GB.  Minimum value is 40 GB.                                          | string   | 80                                   |
-| sitelatitude               | OPTIONAL: Site Physical Location Latitude, if you want to override the AWS region latitude. See https://www.latlong.net/   | string   |                                      |
-| sitelongitude              | OPTIONAL: Site Physical Location Longitude, if you want to override the AWS region longitude. See https://www.latlong.net/ | string   |                                      |
+| inside_security_group      | OPTIONAL: The AWS security group ID for the inside interfaces  (REQUIRED for Mutli-NIC deployments.)                       | string   |                                      | 
 | clustername                | REQUIRED: Customer Edge site cluster name.                                                                                 | string   |                                      |
 | sitetoken                  | REQUIRED: Distributed Cloud Customer Edge site registration token                                                          | string   |                                      |
 | ce_settings                | REQUIRED: MAP of CE Settings: "ce-name" = { availability_zone = "", outside_subnet_arn = "", inside_subnet_arn = ""}       | map(any) |                                      |
+| default_tags               | OPTIONAL: MAP of AWS Tags to be added to AWS resources                                                                     | map(any) |                                      |
+| f5xc_ce_gateway_multi_nic  | OPTIONAL: Set to true to deploy Customer Edges with multiple network interfaces. False deploys a single nic node.          | bool     | false                                |
+| f5xc_ce_assign_eip         | OPTIONAL: Set to true to deploy a EIP on the outside interface, false to deploy with no EIP.                               | bool     | false                                |
+| project_prefix             | OPTIONAL: Provide a project name prefix that will be applied                                                               | string   | demo                                 |
+| instance_type              | OPTIONAL: The AWS instance type for the Customer Edge                                                                      | string   | t3.xlarge                            |
+| instance_disk_size         | OPTIONAL: The AWS disk size for the Customer Edge in GB.  Minimum value is 40 GB.                                          | string   | 80                                   |
+| sitelatitude               | OPTIONAL: Site Physical Location Latitude, if you want to override the AWS region latitude. See https://www.latlong.net/   | string   |                                      |
+| sitelongitude              | OPTIONAL: Site Physical Location Longitude, if you want to override the AWS region longitude. See https://www.latlong.net/ | string   |                                      |
 
 ## Example Multi-Node Multi-NIC terraform.tfvars:
 ```
@@ -67,6 +66,12 @@ ce_settings   = {
     "f5xc_ce_2" = { availability_zone = "us-east-1b", outside_subnet_arn = "subnet-00000000000000000", inside_subnet_arn = "subnet-00000000000000000"}
     "f5xc_ce_3" = { availability_zone = "us-east-1c", outside_subnet_arn = "subnet-00000000000000000", inside_subnet_arn = "subnet-00000000000000000"}
 }
+default_tags = {
+    "Owner" = "blah@example.com"
+    "tagname" = "tagvalue"
+    "ves-io-creator-id" = "blah@example.com"
+    "environment" = "TestDev"
+}
 ```
 
 ## Example Single-Node Single-NIC terraform.tfvars:
@@ -78,13 +83,18 @@ create_iam_role            = true
 f5xc_ce_gateway_multi_nic  = false
 f5xc_ce_assign_eip         = false
 project_prefix             = "exampleProject"
-resource_owner             = "owner@example.com"
 outside_security_group     = "sg-00000000000000000"
 inside_security_group      = ""
 clustername                = "exampleProject-tf-aws-useast2"
 sitetoken                  = "00000000-0000-0000-0000-000000000000"
 ce_settings   = {
     "f5xc_ce_1" = { availability_zone = "us-east-1a", outside_subnet_arn = "subnet-00000000000000000", inside_subnet_arn = ""}
+}
+default_tags = {
+    "Owner" = "blah@example.com"
+    "tagname" = "tagvalue"
+    "ves-io-creator-id" = "blah@example.com"
+    "environment" = "TestDev"
 }
 ```
 
@@ -106,7 +116,7 @@ terraform apply
 
 ## Destruction
 
-For destruction / tear down you can use the trafitional terraform commands.
+For destruction / tear down you can use the traditional terraform commands.
 
 ```bash
 terraform destroy

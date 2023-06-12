@@ -2,6 +2,9 @@ provider "aws" {
   region     = var.aws_region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
+  default_tags { 
+    tags = var.default_tags
+  }
 }
 
 # Create Random ID to Append to Builds to Avoid Naming Conflicts
@@ -25,9 +28,6 @@ resource "aws_key_pair" "deployer" {
   # create a new AWS ssh identity
   key_name   = "${var.project_prefix}-key-${random_id.buildSuffix.hex}"
   public_key = tls_private_key.newkey.public_key_openssh
-  tags = {
-    Owner = var.resource_owner
-  }
 }
 
 # Create IAM policy
@@ -159,7 +159,6 @@ resource "aws_network_interface" "inside_map" {
   ipv6_address_list_enabled = false
   tags = {
     Name  = "${var.project_prefix}-${each.key}_inside-${random_id.buildSuffix.hex}"
-    Owner = var.resource_owner
   }
 }
 resource "aws_network_interface" "outside_map" {
@@ -172,7 +171,6 @@ resource "aws_network_interface" "outside_map" {
   ipv6_address_list_enabled = false
   tags = {
     Name  = "${var.project_prefix}-${each.key}_outside-${random_id.buildSuffix.hex}"
-    Owner = var.resource_owner
   }
 }
 resource "aws_eip" "outside_eip_map" {
@@ -180,12 +178,11 @@ resource "aws_eip" "outside_eip_map" {
     for k, v in var.ce_settings : k => v
     if var.f5xc_ce_gateway_multi_nic 
   }
-  vpc                       = true
+  domain                    = "vpc"
   network_interface         = aws_network_interface.outside_map["${each.key}"].id
   associate_with_private_ip = aws_network_interface.outside_map["${each.key}"].private_ip
   tags = {
     Name  = "${var.project_prefix}-${each.key}_outside_eipd-${random_id.buildSuffix.hex}"
-    Owner = var.resource_owner
   }
 }
 
@@ -226,7 +223,7 @@ resource "aws_instance" "ce_map" {
     }
   }
   tags = {
-    Name = "${var.project_prefix}-master-0"
+    Name = "${var.project_prefix}-${each.key}-${random_id.buildSuffix.hex}"
     "kubernetes.io/cluster/${var.clustername}" = "owned"
     ves-io-site-name = "${var.clustername}"
   }
